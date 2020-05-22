@@ -23,13 +23,9 @@
     "type": "git",
     "url": "https://github.com/solidoc/iffe-cli.git"
   },
-  "dependencies": {
+  "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@semantic-release/commit-analyzer": "^8.0.1",
-    "@semantic-release/github": "^7.0.6",
-    "@semantic-release/npm": "^7.0.5",
-    "@semantic-release/release-notes-generator": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^2.34.0",
     "@typescript-eslint/parser": "^2.34.0",
     "commitizen": "^2.7.6",
@@ -38,7 +34,6 @@
     "cz-customizable": "^6.2.0",
     "edit-json-file": "^1.4.0",
     "eslint": "^7.0.0",
-    "eslint-config-airbnb": "^18.1.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",

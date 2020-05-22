@@ -7,7 +7,7 @@ const args = minimist(rawArgs);
 const path = require("path");
 const editJsonFile = require("edit-json-file");
 const fs = require("fs");
-
+var shell = require("shelljs");
 const pkgUrl = `${process.cwd()}/package.json`;
 let file = editJsonFile(pkgUrl);
 
@@ -17,6 +17,7 @@ const pakUrl = `node_modules/${pakName}`;
 // ===================================================
 // 添加提交规范的配置文件
 // 添加scripts脚本
+console.log("添加packages.json配置");
 file.set("scripts.commit", "git add . && git-cz");
 file.set("scripts.push", "git push origin dev");
 file.set("scripts.pull", "git pull origin dev --rebase");
@@ -72,9 +73,32 @@ for (let i = 0; i < copyFileList.length; i++) {
     console.log("创建配置文件:", copyToFilePath);
   });
 }
+file.save();
 
 // fs.copy(configDir, "./configs")
 //   .then(() => console.log("success!"))
 //   .catch((err) => console.error(err));
 
-file.save();
+console.log("开始安装依赖");
+const devDependencies = [
+  "@typescript-eslint/parser",
+  "@typescript-eslint/eslint-plugin",
+  "@commitlint/config-conventional",
+  "@commitlint/cli",
+  "eslint",
+  "eslint-config-prettier",
+  "eslint-plugin-import",
+  "eslint-plugin-jsx-a11y",
+  "eslint-plugin-prettier",
+  "eslint-plugin-react",
+  "eslint-plugin-react-hooks",
+  "husky",
+  "lint-staged",
+  "prettier",
+  "typescript",
+  "cz-customizable",
+  "cz-conventional-changelog",
+  "commitizen",
+];
+const pkgs = devDependencies.join(" ");
+shell.exec(`yarn add ${pkgs} -D -W`, { async: true });
