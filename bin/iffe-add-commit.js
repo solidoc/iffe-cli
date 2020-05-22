@@ -14,23 +14,30 @@ let file = editJsonFile(pkgUrl);
 const pakName = "@solidoc/iffe-cli";
 const pakUrl = `node_modules/${pakName}`;
 
+const setJson = (file, key, value) => {
+  if (!file.get(key)) {
+    file.set(key, value);
+  }
+};
 // ===================================================
 // 添加提交规范的配置文件
 // 添加scripts脚本
 console.log("添加packages.json配置");
-file.set("scripts.commit", "git add . && git-cz");
-file.set("scripts.push", "git push origin dev");
-file.set("scripts.pull", "git pull origin dev --rebase");
+setJson(file, "scripts.commit", "git add . && git-cz");
+setJson(file, "scripts.push", "git push origin dev");
+setJson(file, "scripts.pull", "git pull origin dev --rebase");
 
 // 添加commitizen配置
-file.set("config.commitizen.path", "node_modules/cz-customizable");
-file.set(
+setJson(file, "config.commitizen.path", "node_modules/cz-customizable");
+setJson(
+  file,
   "config.cz-customizable.config",
   `${pakUrl}/configs/cz-customizable.js`
 );
 
 // 添加husky配置
-file.set(
+setJson(
+  file,
   "husky.hooks.commit-msg",
   `commitlint --config ${pakUrl}/configs/commitlint.js --env HUSKY_GIT_PARAMS`
 );
@@ -38,24 +45,26 @@ file.set(
 // ===================================================
 // // 添加代码规范
 // // 添加scripts脚本
-file.set("scripts.fix", "yarn fix:prettier && yarn fix:eslint");
-file.set("scripts.fix:eslint", "yarn lint:eslint --fix");
-file.set("scripts.fix:prettier", "yarn lint:prettier --write");
-file.set("scripts.lint", "yarn lint:eslint");
-file.set(
+setJson(file, "scripts.fix", "yarn fix:prettier && yarn fix:eslint");
+setJson(file, "scripts.fix:eslint", "yarn lint:eslint --fix");
+setJson(file, "scripts.fix:prettier", "yarn lint:prettier --write");
+setJson(file, "scripts.lint", "yarn lint:eslint");
+setJson(
+  file,
   "scripts.lint:eslint",
   'eslint "./src/**/*.{js,jsx,ts,tsx}" -c ./configs/eslintrc.js'
 );
-file.set(
+setJson(
+  file,
   "scripts.lint:prettier",
   'prettier --list-different "**/*.{css,md,js,jsx,json,ts,tsx}"'
 );
 
 // 添加配置
-file.set("prettier", "./configs/prettierrc.js");
-file.set("release.extends", "./configs/releaserc.json");
-file.set("lint-staged.src/**/*", "yarn fix");
-file.set("husky.hooks.pre-commit", "lint-staged");
+setJson(file, "prettier", "./configs/prettierrc.js");
+setJson(file, "release.extends", "./configs/releaserc.json");
+setJson(file, "lint-staged.src/**/*", "yarn fix");
+setJson(file, "husky.hooks.pre-commit", "lint-staged");
 
 // 拷贝文件
 const copyFileList = ["eslintrc.js", "releaserc.json", "prettierrc.js"];
@@ -68,16 +77,16 @@ for (let i = 0; i < copyFileList.length; i++) {
   const fileName = copyFileList[i];
   const copyFilePath = `${copyDir}/${fileName}`;
   const copyToFilePath = `${copyToDir}/${fileName}`;
-  fs.copyFile(copyFilePath, copyToFilePath, (err) => {
-    if (err) throw err;
-    console.log("创建配置文件:", copyToFilePath);
-  });
+  const isExists = fs.existsSync(copyToFilePath);
+  console.info("是否存在：", copyToFilePath, isExists);
+  if (!isExists) {
+    fs.copyFile(copyFilePath, copyToFilePath, (err) => {
+      if (err) throw err;
+      console.log("创建配置文件:", copyToFilePath);
+    });
+  }
 }
 file.save();
-
-// fs.copy(configDir, "./configs")
-//   .then(() => console.log("success!"))
-//   .catch((err) => console.error(err));
 
 console.log("开始安装依赖");
 const devDependencies = [
