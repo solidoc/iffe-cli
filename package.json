@@ -1,0 +1,66 @@
+{
+  "name": "@solidoc/iffe-cli",
+  "version": "0.0.2",
+  "description": "iffe 安装脚本",
+  "main": "index.js",
+  "license": "MIT",
+  "bin": {
+    "iffe-add-commit": "./bin/iffe-add-commit.js"
+  },
+  "scripts": {
+    "commit": "git add . && git-cz",
+    "push": "git push origin master",
+    "pull": "git pull origin master --rebase"
+  },
+  "files": [
+    "bin"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solidoc/iffe-cli.git"
+  },
+  "dependencies": {
+    "edit-json-file": "^1.4.0",
+    "fs-extra": "^9.0.0",
+    "cross-env": "^7.0.2",
+    "minimist": "^1.2.5",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/github": "^7.0.6",
+    "@semantic-release/npm": "^7.0.5",
+    "@semantic-release/release-notes-generator": "^9.0.1",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
+    "commitizen": "^2.7.6",
+    "cz-conventional-changelog": "^1.1.5",
+    "cz-customizable": "^6.2.0",
+    "eslint": "^7.0.0",
+    "prettier": "^2.0.5",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint-plugin-react-hooks": "^4.0.2",
+    "lint-staged": "^10.2.4",
+    "husky": "^4.2.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-customizable"
+    },
+    "cz-customizable": {
+      "config": "./configs/cz-customizable-config.js"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint --config ./configs/commitlint.config.js -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
