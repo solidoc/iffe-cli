@@ -13,7 +13,8 @@
     "pull": "git pull origin master --rebase"
   },
   "files": [
-    "bin"
+    "bin",
+    "configs"
   ],
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
