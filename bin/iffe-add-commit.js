@@ -5,12 +5,14 @@ const minimist = require("minimist");
 const rawArgs = process.argv.slice(2);
 const args = minimist(rawArgs);
 const path = require("path");
-const fs = require("fs-extra");
 const editJsonFile = require("edit-json-file");
+const fs = require("fs");
 
 const pkgUrl = `${process.cwd()}/package.json`;
 let file = editJsonFile(pkgUrl);
-const pakName = "iffe-commit";
+
+const pakName = "@solidoc/iffe-cli";
+const pakUrl = `node_modules/${pakName}`;
 
 // ===================================================
 // 添加提交规范的配置文件
@@ -23,13 +25,13 @@ file.set("scripts.pull", "git pull origin dev --rebase");
 file.set("config.commitizen.path", "node_modules/cz-customizable");
 file.set(
   "config.cz-customizable.config",
-  `node_modules/${pakName}/cz-config.js`
+  `${pakUrl}/configs/cz-customizable.js`
 );
 
 // 添加husky配置
 file.set(
   "husky.hooks.commit-msg",
-  `commitlint --config node_modules/${pakName}/commitlint.config.js -E HUSKY_GIT_PARAMS`
+  `commitlint --config ${pakUrl}/configs/commitlint.js --env HUSKY_GIT_PARAMS`
 );
 
 // ===================================================
@@ -41,7 +43,7 @@ file.set("scripts.fix:prettier", "yarn lint:prettier --write");
 file.set("scripts.lint", "yarn lint:eslint");
 file.set(
   "scripts.lint:eslint",
-  'eslint "./src/**/*.{js,jsx,ts,tsx}" -c ./config/.eslintrc.js'
+  'eslint "./src/**/*.{js,jsx,ts,tsx}" -c ./configs/eslintrc.js'
 );
 file.set(
   "scripts.lint:prettier",
@@ -49,15 +51,30 @@ file.set(
 );
 
 // 添加配置
-file.set("prettier", "./config/.prettierrc.js");
-file.set("release.extends", "./config/.releaserc.json");
+file.set("prettier", "./configs/prettierrc.js");
+file.set("release.extends", "./configs/releaserc.json");
 file.set("lint-staged.src/**/*", "yarn fix");
 file.set("husky.hooks.pre-commit", "lint-staged");
 
 // 拷贝文件
-const configDir = `node_modules/${pakName}/config/`;
-fs.copy(configDir, "./config")
-  .then(() => console.log("success!"))
-  .catch((err) => console.error(err));
+const copyFileList = ["eslintrc.js", "releaserc.json", "prettierrc.js"];
+const copyDir = `${pakUrl}/configs`;
+const copyToDir = `./configs`;
+fs.mkdirSync(copyToDir, { recursive: true }, (err) => {
+  if (err) throw err;
+});
+for (let i = 0; i < copyFileList.length; i++) {
+  const fileName = copyFileList[i];
+  const copyFilePath = `${copyDir}/${fileName}`;
+  const copyToFilePath = `${copyToDir}/${fileName}`;
+  fs.copyFile(copyFilePath, copyToFilePath, (err) => {
+    if (err) throw err;
+    console.log("创建配置文件:", copyToFilePath);
+  });
+}
+
+// fs.copy(configDir, "./configs")
+//   .then(() => console.log("success!"))
+//   .catch((err) => console.error(err));
 
 file.save();

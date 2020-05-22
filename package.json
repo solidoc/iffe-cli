@@ -1,6 +1,6 @@
 {
   "name": "@solidoc/iffe-cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "iffe 安装脚本",
   "main": "index.js",
   "license": "MIT",
@@ -55,12 +55,12 @@
       "path": "node_modules/cz-customizable"
     },
     "cz-customizable": {
-      "config": "./configs/cz-customizable-config.js"
+      "config": "./configs/cz-customizable.js"
     }
   },
   "husky": {
     "hooks": {
-      "commit-msg": "commitlint --config ./configs/commitlint.config.js -E HUSKY_GIT_PARAMS"
+      "commit-msg": "commitlint --config ./configs/commitlint.js --env HUSKY_GIT_PARAMS"
     }
   }
 }
